@@ -1,7 +1,14 @@
 from pyspark.sql import SparkSession
+import logging
+import logging.config
+
+# Load the Logging Configuration File
+logging.config.fileConfig(fname='../util/logging_to_file.conf')
+logger = logging.getLogger(__name__)
 
 def get_spark_object(envn,appName ):
     try:
+        logger.info(f"get_spark_object() is started. The '{envn}' envn is used.")
         if envn == 'TEST' :
             master='local'
         else:
@@ -12,12 +19,12 @@ def get_spark_object(envn,appName ):
                   .appName(appName) \
                   .getOrCreate()
     except NameError as exp:
-        print("NameError in the method - get_spark_object(). Please check the Stack Trace. " + str(exp))
+        logger.error("NameError in the method - get_spark_object(). Please check the Stack Trace. " + str(exp),exc_info=True)
         raise
     except Exception as exp:
-        print("Error in the method - get_spark_object(). Please check the Stack Trace. " + str(exp))
+        logger.error("Error in the method - get_spark_object(). Please check the Stack Trace. " + str(exp),exc_info=True)
     else:
-        print("Spark Object is created ...")
+        logger.info("Spark Object is created ...")
     return spark
 
 
