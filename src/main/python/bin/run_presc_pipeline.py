@@ -16,7 +16,6 @@ def main():
         spark = get_spark_object(gav.envn,gav.appName)
         # Validate Spark Object
         get_curr_date(spark)
-        # Set up Error Handling
         # Set up Logging Configuration Mechanism
 
         ### Initiate run_presc_data_ingest Script
@@ -45,8 +44,10 @@ def main():
 
         ### End of Application Part 1
         logging.info("presc_run_pipeline.py is Completed.")
+
     except Exception as exp:
-        print("Error Occured in the main() method. Please check the Stack Trace to go to the respective module and fix it." +str(exp))
+        logging.error("Error Occured in the main() method. Please check the Stack Trace to go to the respective module "
+              "and fix it." +str(exp),exc_info=True)
         sys.exit(1)
 
 if __name__ == "__main__" :
