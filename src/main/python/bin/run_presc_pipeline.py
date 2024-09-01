@@ -3,9 +3,15 @@ import get_all_variables as gav
 from create_objects import get_spark_object
 from validations import get_curr_date
 import sys
+import logging
+import logging.config
+
+### Load the Logging Configuration File
+logging.config.fileConfig(fname='../util/logging_to_file.conf')
 
 def main():
     try:
+        logging.info("main() is started ...")
         ### Get Spark Object
         spark = get_spark_object(gav.envn,gav.appName)
         # Validate Spark Object
@@ -36,12 +42,13 @@ def main():
         # Validate
         # Set up Error Handling
         # Set up Logging Configuration Mechanism
+
+        ### End of Application Part 1
+        logging.info("presc_run_pipeline.py is Completed.")
     except Exception as exp:
         print("Error Occured in the main() method. Please check the Stack Trace to go to the respective module and fix it." +str(exp))
         sys.exit(1)
 
-
-### End of Application Part 1
-
 if __name__ == "__main__" :
+    logging.info("run_presc_pipeline is Started ...")
     main()
