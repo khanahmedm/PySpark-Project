@@ -7,6 +7,7 @@ import logging
 import logging.config
 import os
 from presc_run_data_ingest import load_files
+from presc_run_data_preprocessing import perform_data_clean
 
 ### Load the Logging Configuration File
 logging.config.fileConfig(fname='../util/logging_to_file.conf')
@@ -58,16 +59,13 @@ def main():
         df_count(df_fact,'df_fact')
         df_top10_rec(df_fact,'df_fact')
 
+        ### Initiate presc_run_data_preprocessing Script
+        ## Perform data Cleaning Operations for df_city
+        df_city_sel = perform_data_clean(df_city)
 
-        # Validate
-        # Set up Error Handling
-        # Set up Logging Configuration Mechanism
+        #Validation for df_city
+        df_top10_rec(df_city_sel,'df_city_sel')
 
-        ### Initiate run_presc_data_preprocessing Script
-        # Perform data Cleaning Operations
-        # Validate
-        # Set up Error Handling
-        # Set up Logging Configuration Mechanism
 
         ### Initiate run_presc_data_transform Script
         # Apply all the transfrmations Logics
