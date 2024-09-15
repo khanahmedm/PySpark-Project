@@ -30,7 +30,6 @@ def perform_data_clean(df1,df2):
                              df2.total_drug_cost)
     #3 Add a Country Field 'USA'
         df_fact_sel = df_fact_sel.withColumn("country_name",lit("USA"))
-
     #4 Clean years_of_exp field
     #5 Convert the yearS_of_exp datatype from string to Number
     #6 Combine First Name and Last Name

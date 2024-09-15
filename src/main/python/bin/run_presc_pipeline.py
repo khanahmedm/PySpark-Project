@@ -1,7 +1,7 @@
 ### Import all the necessary Modules
 import get_all_variables as gav
 from create_objects import get_spark_object
-from validations import get_curr_date, df_count, df_top10_rec
+from validations import get_curr_date, df_count, df_top10_rec, df_print_schema
 import sys
 import logging
 import logging.config
@@ -66,8 +66,7 @@ def main():
         #Validation for df_city and df_fact
         df_top10_rec(df_city_sel,'df_city_sel')
         df_top10_rec(df_fact_sel,'df_fact_sel')
-
-
+        df_print_schema(df_fact_sel,'df_fact_sel')
 
         ### Initiate run_presc_data_transform Script
         # Apply all the transformations Logics
