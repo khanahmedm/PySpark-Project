@@ -60,15 +60,17 @@ def main():
         df_top10_rec(df_fact,'df_fact')
 
         ### Initiate presc_run_data_preprocessing Script
-        ## Perform data Cleaning Operations for df_city
-        df_city_sel = perform_data_clean(df_city)
+        ## Perform data Cleaning Operations for df_city and df_fact
+        df_city_sel,df_fact_sel = perform_data_clean(df_city,df_fact)
 
-        #Validation for df_city
+        #Validation for df_city and df_fact
         df_top10_rec(df_city_sel,'df_city_sel')
+        df_top10_rec(df_fact_sel,'df_fact_sel')
+
 
 
         ### Initiate run_presc_data_transform Script
-        # Apply all the transfrmations Logics
+        # Apply all the transformations Logics
         # Validate
 
         # Set up Logging Configuration Mechanism
