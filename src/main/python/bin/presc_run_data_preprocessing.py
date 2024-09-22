@@ -1,6 +1,6 @@
 import logging
 import logging.config
-from pyspark.sql.functions import upper, lit, regexp_extract, col
+from pyspark.sql.functions import upper, lit, regexp_extract, col, concat_ws
 
 # Load the Logging Configuration File
 logging.config.fileConfig(fname='../util/logging_to_file.conf')
@@ -30,13 +30,18 @@ def perform_data_clean(df1,df2):
                              df2.total_drug_cost)
     #3 Add a Country Field 'USA'
         df_fact_sel = df_fact_sel.withColumn("country_name",lit("USA"))
+
     #4 Clean years_of_exp field
         pattern='\d+'
         idx=0
         df_fact_sel = df_fact_sel.withColumn("years_of_exp",regexp_extract(col("years_of_exp"),pattern,idx))
     #5 Convert the yearS_of_exp datatype from string to Number
         df_fact_sel = df_fact_sel.withColumn("years_of_exp",col("years_of_exp").cast("int"))
+
     #6 Combine First Name and Last Name
+        df_fact_sel = df_fact_sel.withColumn("presc_fullname",concat_ws(" ", "presc_fname", "presc_lname"))
+        df_fact_sel = df_fact_sel.drop("presc_fname", "presc_lname")
+
     #7 Check and clean all the Null/Nan Values
     #8 Impute TRX_CNT where it is null as avg of trx_cnt for the prescriber
 
