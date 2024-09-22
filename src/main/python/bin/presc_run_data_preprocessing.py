@@ -1,6 +1,6 @@
 import logging
 import logging.config
-from pyspark.sql.functions import upper, lit, regexp_extract, col, concat_ws
+from pyspark.sql.functions import upper, lit, regexp_extract, col, concat_ws, count, isnan, when
 
 # Load the Logging Configuration File
 logging.config.fileConfig(fname='../util/logging_to_file.conf')
@@ -43,6 +43,8 @@ def perform_data_clean(df1,df2):
         df_fact_sel = df_fact_sel.drop("presc_fname", "presc_lname")
 
     #7 Check and clean all the Null/Nan Values
+        df_fact_sel.select([count(when(isnan(c) | col(c).isNull(),c)).alias(c) for c in df_fact_sel.columns]).show()
+
     #8 Impute TRX_CNT where it is null as avg of trx_cnt for the prescriber
 
     except Exception as exp:
