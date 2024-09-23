@@ -8,9 +8,11 @@ import logging.config
 import os
 from presc_run_data_ingest import load_files
 from presc_run_data_preprocessing import perform_data_clean
+from presc_run_data_transform import city_report, top_5_Prescribers
 
 ### Load the Logging Configuration File
 logging.config.fileConfig(fname='../util/logging_to_file.conf')
+from presc_run_data_transform import city_report
 
 def main():
     try:
@@ -68,9 +70,15 @@ def main():
         df_top10_rec(df_fact_sel,'df_fact_sel')
         df_print_schema(df_fact_sel,'df_fact_sel')
 
-        ### Initiate run_presc_data_transform Script
-        # Apply all the transformations Logics
-        # Validate
+        ### Initiate presc_run_data_transform Script
+        df_city_final = city_report(df_city_sel,df_fact_sel)
+        df_presc_final = top_5_Prescribers(df_fact_sel)
+
+        #Validation for df_city_final
+        df_top10_rec(df_city_final,'df_city_final')
+        df_print_schema(df_city_final,'df_city_final')
+        df_top10_rec(df_presc_final,'df_presc_final')
+        df_print_schema(df_presc_final,'df_presc_final')
 
         # Set up Logging Configuration Mechanism
 

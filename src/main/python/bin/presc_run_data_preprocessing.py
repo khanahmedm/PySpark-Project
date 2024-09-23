@@ -1,6 +1,7 @@
 import logging
 import logging.config
-from pyspark.sql.functions import upper, lit, regexp_extract, col, concat_ws, count, isnan, when
+from pyspark.sql.functions import upper, lit, regexp_extract, col, concat_ws, count, isnan, when,  avg, round, coalesce
+from pyspark.sql.window import Window
 
 # Load the Logging Configuration File
 logging.config.fileConfig(fname='../util/logging_to_file.conf')
@@ -43,9 +44,22 @@ def perform_data_clean(df1,df2):
         df_fact_sel = df_fact_sel.drop("presc_fname", "presc_lname")
 
     #7 Check and clean all the Null/Nan Values
-        df_fact_sel.select([count(when(isnan(c) | col(c).isNull(),c)).alias(c) for c in df_fact_sel.columns]).show()
+        #df_fact_sel.select([count(when(isnan(c) | col(c).isNull(),c)).alias(c) for c in df_fact_sel.columns]).show()
 
-    #8 Impute TRX_CNT where it is null as avg of trx_cnt for the prescriber
+    #8 Delete the records where the PRESC_ID is NULL
+        df_fact_sel = df_fact_sel.dropna(subset="presc_id")
+
+    #9 Delete the records where the DRUG_NAME is NULL
+        df_fact_sel = df_fact_sel.dropna(subset="drug_name")
+
+    #10 Impute TRX_CNT where it is null as avg of trx_cnt for that prescriber
+        spec = Window.partitionBy("presc_id")
+        df_fact_sel = df_fact_sel.withColumn('trx_cnt', coalesce("trx_cnt",round(avg("trx_cnt").over(spec))))
+        df_fact_sel=df_fact_sel.withColumn("trx_cnt",col("trx_cnt").cast('integer'))
+
+        # Check and clean all the Null/Nan Values
+        #df_fact_sel.select([count(when(isnan(c) | col(c).isNull(),c)).alias(c) for c in df_fact_sel.columns]).show()
+
 
     except Exception as exp:
         logger.error("Error in the method - spark_curr_date(). Please check the Stack Trace. " + str(exp),exc_info=True)
